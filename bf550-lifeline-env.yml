@@ -1,10 +1,10 @@
-name: bf550-final-env
+name: bf550-lifeline-env
 channels:
   - conda-forge
   - defaults
 dependencies:
   - python=3.10
-  - numpy=1.26.4
+  - numpy
   - matplotlib
   - seaborn
   - pandas
@@ -12,10 +12,7 @@ dependencies:
   - scikit-learn
   - scipy
   - scikit-survival
-  - scikit-learn-extra
   - lifelines
   - pip
   - pip:
-    - GEOparse
-    - inmoose
 
