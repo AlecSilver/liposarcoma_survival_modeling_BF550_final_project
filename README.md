@@ -1,7 +1,7 @@
-# Final project for BF500 
+# Final project for BF550 
 ## Foundations of Programming, Data Analytics, and Machine Learning in Python
 
-In this project, I am recreating figures from a paper of my choosing, with an emphasis on Python and machine learning methods. I have chosen to reproduce results from Chenhe et al., 2025, specifically Figure 4, in which the researchers evaluate several machine-learning survival models to predict the time to metastasis in liposarcoma tumors using RNA microarray data.
+In this project, I am recreating figures from a paper of my choosing, with an emphasis on Python and machine learning methods. I have chosen to reproduce results from Zhang et al., 2025, specifically Figure 4, in which the researchers evaluate several machine-learning survival models to predict the time to metastasis in liposarcoma tumors using RNA microarray data.
 
 ## Background
 
@@ -9,14 +9,14 @@ Liposarcoma is a rare type of cancer that originates in fat cells. It is often a
 
 ## Methods
 #### Data Acquisition
-Gene expression microarray data were obtained from the NIH Gene Expression Omnibus. Three datasets, GSE21050, GSE30929, and GSE71118, were used. Keeping only liposarcoma samples yielded 247 cases, in contrast to the 192 samples reported in the paper
+Gene expression microarray data were obtained from the NIH Gene Expression Omnibus. Three datasets, GSE21050, GSE30929, and GSE71118, were used. Keeping only liposarcoma samples yielded 247 cases, in contrast to the 192 samples reported in the paper.
 #### Data Normalization
 Datasets were combined and transformed into log2 scale when not already in that format. They were then batch‑corrected using the InMoose Python implementation of ComBat (Johnson et al., 2007).
 #### Initial Feature Selection
-In a departure from the paper, which used Maximal Information Coefficient (MIC), to remove non-relevent probes, I followed the protocol outlined in the R Mime package. Feature selection was performed using univariate Cox regression, selecting probes with p-values of 0.05 or less. This was done using the lifelines package (Davidson-Pilon, 2019). This step reduced the original 22,215 probes to 6,150, a 72% reduction in feature size. 
+In a departure from the paper, which used Maximal Information Coefficient (MIC) to remove non-relevant probes, I followed the protocol outlined in the R Mime package. Feature selection was performed using univariate Cox regression, selecting probes with p-values of 0.05 or less. This was done using the lifelines package (Davidson-Pilon, 2019). This step reduced the original 22,215 probes to 6,150, a 72% reduction in feature size. 
 #### Model Comparison
 The data was split into a 70% training and 30% testing set. Sixteen different survival models were tested using three‑fold cross‑validation with the scikit‑survival package (Pölsterl, 2020). 
-Multivariate Feature Selection
+#### Multivariate Feature Selection
 Additional feature selection was carried out using an Elastic Net regression model. The Elastic Net hyperparameter alpha was first optimized through three‑fold cross‑validation.
 The optimized model was then fit to a randomized 90% subsample of the training data 100 times. Probes selected at least 20 times were considered prognostically relevant, reducing the feature set to 82 probes.
 #### Feature Importance
@@ -36,7 +36,7 @@ Based on the c‑index, the Survival Support Vector Machine (SVM) and all the en
 
 #### Feature Importance
 I next attempted to recreate Figure 4B, which plots “variable importance” in their RSF model. Variable importance can be estimated through internal model metrics or through model‑agnostic permutation methods. Based on their reported values, I suspect they used permutation importance, and I adopted the same process.
-However, computing permutation importance for all 6,150 probes was too computationally intensive, requiring additional feature reduction. Replicating the standard Mime pipeline, I replicated their approach of repeatedly applying regularized regression and selecting consensus features. I optimized an Elastic Net model and ran it 100 times on randomized training subsets, keeping probes chosen at least 20 times. This produced 82 core probes.
+However, computing permutation importance for all 6,150 probes was too computationally intensive, requiring additional feature reduction. Following the standard Mime pipeline, I replicated their approach of repeatedly applying regularized regression and selecting consensus features. I optimized an Elastic Net model and ran it 100 times on randomized training subsets, keeping probes chosen at least 20 times. This produced 82 core probes.
 These 82 probes were then used to refit the SVM model, with no decrease in accuracy as measured by the c-index. Feature importance was calculated using permutation tests on the testing dataset.
 
 #### Kaplan–Meier Survival Curves
@@ -49,10 +49,7 @@ A clear separation emerged between groups: the high‑risk cohort had roughly a 
 
 
 ## References
- Z. Chenhe et al., **“Integrating machine learning and molecular dynamics simulation to decipher the molecular network of dioxin-associated liposarcoma,”** Sci Rep, vol. 15, no. 1, p. 40072, Nov. 2025, doi: 10.1038/s41598-025-25116-y.
-
-
-Chenhe, Z., Aobo, Z., Xiao, Z., Han, G., Longshang, W., Zhe, X., Yingxue, C., Huichen, L., Jincheng, W., Wei, Z., & Wengang, L. (2025). **Integrating machine learning and molecular dynamics simulation to decipher the molecular network of dioxin-associated liposarcoma.** Scientific Reports, 15(1), 40072. https://doi.org/10.1038/s41598-025-25116-y
+Zhang, C., Zhuang, A., Zhou, X., Gao, H., Wang, L., Xi, Z., Cheng, Y., Li, H., Wu, J., Zeng, W., & Li, W. (2025). **Integrating machine learning and molecular dynamics simulation to decipher the molecular network of dioxin-associated liposarcoma.** Scientific Reports, 15(1), 40072. https://doi.org/10.1038/s41598-025-25116-y
 
 
 Davidson-Pilon, C. (2019). **lifelines: Survival analysis in Python.** Journal of Open Source Software, 4(40), 1317. https://doi.org/10.21105/joss.01317
